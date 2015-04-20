@@ -1,0 +1,31 @@
+- name: determine if consul config dir exists 
+  stat: path={{ consul_conf_dir }}/common.json
+  register: consul_configuration_path
+
+- debug: msg="Consul configuration directory exists"
+  when: consul_configuration_path.stat.isreg is defined and consul_configuration_path.stat.isreg
+
+- name: determine if consul is installed
+  command: which consul 
+  register: consul_executable
+  when: consul_configuration_path.stat.isreg is defined and consul_configuration_path.stat.isreg
+
+- debug: msg="Consul executable is in PATH"
+  when: consul_executable.stdout is defined and consul_executable.stdout != ""
+
+- name: determine consul version 
+  shell: "{{ consul_executable.stdout }} version | grep 'Consul v' | awk '{print $2}' | sed 's/[[:alpha:]|(|[:space:]]//g' | awk -F- '{print $1}'"
+  register: consul_installed_version
+  when: consul_executable.stdout is defined and consul_executable.stdout != ""
+
+- debug: msg="Consul installed version {{ consul_installed_version.stdout }} "
+  when: consul_installed_version.stdout is defined and consul_installed_version.stdout != ""
+
+- name: register consul already installed 
+  shell: "echo Consul v{{ consul_version }} is already installed."
+  register: skip_consul_install
+  when: consul_installed_version.stdout is defined and consul_installed_version.stdout != "" and consul_installed_version.stdout == "{{ consul_version }}"
+
+- debug: msg="Requested Consul version is already installed"
+  when: skip_consul_install.stdout is defined
+

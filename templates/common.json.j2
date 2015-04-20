@@ -1,0 +1,101 @@
+{ 
+    "addresses": {
+        {% if consul_dns_enabled %}"dns": "{{ consul_dns_address }}",{% endif %}
+        "http": "{{ consul_http_address }}",
+        "https": "{{ consul_https_address }}",
+        "rpc": "{{ consul_rpc_address }}",
+    },
+    "advertise_addr": "{{ consul_advertise_addr }}",
+{% if consul_atlas_infrastructure | length %}
+    "atlas_infrastructure": "{{ consul_atlas_infrastructure }}",
+{% endif %}
+{% if consul_atlas_join | length %}
+    "atlas_join": "{{ consul_atlas_join }}",
+{% endif %}
+{% if consul_atlas_token | length %}
+    "atlas_token": "{{ consul_atlas_token }}",
+{% endif %}
+{% if consul_is_server %}
+    "bootstrap_expect": {{ consul_bootstrap_expect }},
+{% endif %}
+    "bind_addr": "{{ consul_bind_addr }}",
+{% if consul_connection_verify_enabled %}
+    "ca_file": "{{ consul_ca_file }}",
+{% endif %}
+    "cert_file": "{{ consul_cert_file }}",
+    "check_update_interval": "{{ consul_check_update_interval }}",
+    "client_addr": "{{ consul_client_addr }}",
+    "datacenter": "{{ consul_datacenter }}",
+    "data_dir": "{{ consul_data_dir }}",
+    "disable_anonymous_signature": {{ consul_disable_anonymous_signature }},
+    "disable_remote_exec": {{ consul_disable_remote_exec }},
+    "disable_update_check": {{ consul_disable_update_check }},
+{% if consul_dns_enabled %}
+    "dns_config": {
+        "allow_stale": {{ consul_dns_allow_stale }},
+        "enable_truncate": {{ consul_dns_enable_truncate }},
+        "max_stale": "{{ consul_dns_max_stale }}",
+        "node_ttl": "{{ consul_dns_node_ttl }}",
+        "only_passing": {{ consul_dns_only_passing }}
+    },
+{% endif %}
+    "domain": "{{ consul_domain }}",
+    "enable_debug": {{ consul_enable_debug }},
+    "enable_syslog": {{ consul_enable_syslog }},
+{% if consul_encrypt_enabled  %}
+    "encrypt": "{{ consul_encrypt_key }}",
+{% endif %}
+    "key_file": "{{ consul_key_file }}",
+    "leave_on_terminate": {{ consul_leave_on_terminate }},
+    "log_level": {{ consul_log_level }},
+    "node_name": {{ consul_node_name }},
+    "ports": {
+        {% if consul_dns_enabled %}"dns": {{ consul_dns_port }},{% endif %}
+        "http": {{ consul_http_port }},
+        "https": {{ consul_https_port }},
+        "rpc": {{ consul_rpc_port }},
+        "serf_lan": {{ consul_serf_lan_port }},
+        "serf_wan": {{ consul_serf_wan_port }},
+        "server": {{ consul_server_port }}
+    },
+{% if consul_protocol | length %}
+    "protocol": "{{ consul_protocol }}",
+{% endif %}
+{% if consul_recursors | length %}
+    "recursors": "{{ consul_recursors|length }}",
+{% endif %}
+{% if consul_retry_join | length %}
+    "retry_join": [{% for server in consul_retry_join %} "{{ server }}" {% if not loop.last %}, {% endif %}{% endfor %}],
+    "rejoin_after_leave": {{ consul_rejoin_after_leave }},
+    "retry_interval": "{{ consul_retry_interval }}",
+{% endif %}
+{% if consul_retry_join_wan | length %}
+    "retry_join_wan": [{% for server in consul_retry_join_wan %} "{{ server }}" {% if not loop.last %}, {% endif %}{% endfor %}],
+    "retry_interval_wan": "{{ consul_retry_interval_wan }}",
+{% endif %}
+{% if consul_is_server %}
+    "server": true,
+{% endif %}
+    "server_name": "{{ consul_server_name }}",
+    "skip_leave_on_interrupt": {{ consul_skip_leave_on_interrupt }},
+{% if consul_start_join | length %}
+    "start_join": [{% for server in consul_start_join %} "{{ server }}" {% if not loop.last %}, {% endif %}{% endfor %}],
+{% endif %}
+{% if consul_start_join_wan | length %}
+    "start_join_wan": [{% for server in consul_start_join_wan %} "{{ server }}" {% if not loop.last %}, {% endif %}{% endfor %}],
+{% endif %}
+{% if consul_statsd_enabled %}
+    "statsd_addr": "{{ consul_statsd_addr }}",
+{% endif %}
+{% if consul_statsite_enabled %}
+    "statsite_addr": "{{ consul_statsite_addr }}",
+{% endif %}
+{% if consul_enable_syslog %}
+    "syslog_facility": "{{ consul_syslog_facility }}",
+{% endif %}
+{% if consul_connection_verify_enabled %}
+    "verify_incoming": {{ consul_verify_incoming }},
+    "verify_outgoing": {{ consul_verify_outgoing }},
+{% endif %}
+    "ui_dir": "{{ consul_ui_dir }}"
+}

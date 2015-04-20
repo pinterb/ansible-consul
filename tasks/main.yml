@@ -1,0 +1,16 @@
+---
+- include: install_check.yml
+  tags:
+    - status 
+
+- include: install.yml
+  when: skip_consul_install.stdout is not defined
+  tags:
+    - install
+
+- include: configure.yml
+  tags:
+    - configure
+
+
+

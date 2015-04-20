@@ -1,0 +1,15 @@
+{ 
+    "acl_datacenter": "{{ consul_acl_datacenter }}",
+{% if consul_is_server %}
+    "acl_master_token": "{{ consul_acl_master_token }}",
+    "acl_default_policy": "{{ consul_acl_default_policy }}",
+    "acl_down_policy": "{{ consul_acl_down_policy }}",
+{% endif %}
+{%- if consul_agent_token is defined %}
+    "acl_token": "{{ consul_agent_token }}",
+{% endif %}
+{% if consul_atlas_acl_token | length %}
+    "atlas_acl_token": "{{ consul_atlas_acl_token }}",
+{% endif %}
+    "acl_ttl": "{{ consul_acl_ttl }}"
+}

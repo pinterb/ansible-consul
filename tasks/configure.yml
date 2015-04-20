@@ -1,0 +1,87 @@
+---
+- name: copy over tls files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: "{{ item.owner | default('consul') }}"
+    mode: "{{ item.mode | default(0400) }}"
+  with_items:
+    - src: ssl/cacert.pem
+      dest: {{ consul_ca_file }}
+      owner: {{ consul_user }}
+    - src: ssl/certs/consul.cert.pem
+      dest: {{ consul_cert_file }}
+      owner: {{ consul_user }}
+    - src: ssl/private/consul.key.pem
+      dest: {{ consul_key_file }}
+      owner: {{ consul_user }}
+    - src: consul-acl-bootstrap.sh
+      dest: /usr/local/bin
+      owner: {{ consul_user }}
+      mode: u=rwx
+  tags:
+    - consul
+
+- name: configure consul
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode | default('u=rw,g=r,o=r') }}"
+  with_items:
+    - src: common.json.j2
+      dest: {{ consul_conf_dir }}/consul.json
+  notify:
+    - restart consul
+  tags:
+    - consul
+    
+- name: change ownership of consul files
+  file: path={{ consul_dir }} owner={{ consul_user }} group={{ consul_group }} recurse=true
+  when: not ansible_os_family == 'Darwin'
+  tags:
+    - consul
+
+- name: install the supervisord config script
+  template: src=supervisor.d_consul.conf dest={{ consul_supervisord_config_dir }}/consul.conf owner=root group=root mode=0644
+  notify:
+    - supervisor started
+    - restart consul
+  when: consul_supervisor_enabled
+  tags:
+    - consul
+
+- name: flush consul handlers
+  meta: flush_handlers
+  tags:
+    - consul
+
+# Give consul time to elect a leader
+- name: wait for leader
+  wait_for:
+    port: 8301
+    delay: 10
+
+- name: create agent acl
+  command: /usr/local/bin/consul-acl-bootstrap.sh {{ consul_acl_master_token }} {{ consul_acl_agent_token | default('') }}
+  run_once: yes
+  register: agent_acl
+  when:
+    - consul_acl_master_token != ""
+  tags:
+    - consul
+
+- name: get agent token from kv operation 
+  run_once: yes
+  set_fact:
+    consul_agent_token: "{{ (agent_acl.stdout|from_json).ID }}"
+  when:
+    - consul_acl_master_token != ""
+  tags:
+    - consul
+
+- include: agent_acl.yml
+  when: (consul_acl_master_token != "") and (consul_acl_agent_token is not defined or consul_agent_token != consul_acl_agent_token)
+    
+- name: suggest supervisor
+  debug: msg="Supervisor process management for consul is not enabled. Consul will not be started automatically. Consider applying role sgargan.supervisord"
+  when: not consul_supervisor_enabled

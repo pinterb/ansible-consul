@@ -1,0 +1,2 @@
+- include: install_linux.yml
+  when: not ansible_os_family == 'Darwin'
