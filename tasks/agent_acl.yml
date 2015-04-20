@@ -17,5 +17,5 @@
   tags:
     - consul
 
-- include: reload_consul.yml
+#- include: reload_consul.yml
   

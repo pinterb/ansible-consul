@@ -7,17 +7,17 @@
     mode: "{{ item.mode | default(0400) }}"
   with_items:
     - src: ssl/cacert.pem
-      dest: {{ consul_ca_file }}
-      owner: {{ consul_user }}
+      dest: "{{ consul_ca_file }}"
+      owner: "{{ consul_user }}"
     - src: ssl/certs/consul.cert.pem
-      dest: {{ consul_cert_file }}
-      owner: {{ consul_user }}
+      dest: "{{ consul_cert_file }}"
+      owner: "{{ consul_user }}"
     - src: ssl/private/consul.key.pem
-      dest: {{ consul_key_file }}
-      owner: {{ consul_user }}
+      dest: "{{ consul_key_file }}"
+      owner: "{{ consul_user }}"
     - src: consul-acl-bootstrap.sh
       dest: /usr/local/bin
-      owner: {{ consul_user }}
+      owner: "{{ consul_user }}"
       mode: u=rwx
   tags:
     - consul
@@ -29,7 +29,7 @@
     mode: "{{ item.mode | default('u=rw,g=r,o=r') }}"
   with_items:
     - src: common.json.j2
-      dest: {{ consul_conf_dir }}/consul.json
+      dest: "{{ consul_conf_dir }}/consul.json"
   notify:
     - restart consul
   tags:
