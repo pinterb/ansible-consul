@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: Brad Pinter 
+  description: Role to install Consul and run consul.
+  license: Apache 2 
+  min_ansible_version: 1.7
+
+  platforms:
+    - name: GenericUNIX
+      versions:
+        - any
+
+  categories:
+    - clustering
+    - monitoring
+  
+  dependencies: []
