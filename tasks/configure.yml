@@ -1,4 +1,12 @@
 ---
+- name: stat ssl cacert.pem file 
+  stat: 
+    path: ssl/cacert.pem
+  register: ssl_ca_file
+
+- debug: msg="ssl cacert.pem exists"
+  when: ssl_ca_file.stat.isreg is defined and ssl_ca_file.stat.isreg
+
 - name: copy over tls files
   copy:
     src: "{{ item.src }}"
