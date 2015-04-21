@@ -36,13 +36,24 @@
     - consul
     
 - name: change ownership of consul files
-  file: path={{ consul_dir }} owner={{ consul_user }} group={{ consul_group }} recurse=true
+  file:
+    path: "{{ consul_dir }}"
+    owner: "{{ consul_user }}"
+    group: "{{ consul_group }}"
+    recurse: true
+  notify:
+    - restart consul
   when: not ansible_os_family == 'Darwin'
   tags:
     - consul
 
 - name: install the supervisord config script
-  template: src=supervisor.d_consul.conf dest={{ consul_supervisord_config_dir }}/consul.conf owner=root group=root mode=0644
+  template:
+    src: supervisor.d_consul.conf
+    dest: "{{ consul_supervisord_config_dir }}/consul.conf"
+    owner: root
+    group: root
+    mode: 0644
   notify:
     - supervisor started
     - restart consul
