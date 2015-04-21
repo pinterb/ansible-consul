@@ -1,4 +1,11 @@
 ---
+- name: echo ssl directory
+  command: ls -ltr {{ playbook_dir }}/ssl
+  register: ssl_ls
+
+- debug: msg="{{ playbook_dir }}/ssl directory contents are {{ ssl_ls.stdout }}"
+  when: ssl_ls.stdout s defined
+
 - name: stat ssl cacert.pem file
   stat: 
     path: "{{ playbook_dir }}/ssl/cacert.pem"
