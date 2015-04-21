@@ -3,7 +3,7 @@
         {% if consul_dns_enabled %}"dns": "{{ consul_dns_address }}",{% endif %}
         "http": "{{ consul_http_address }}",
         "https": "{{ consul_https_address }}",
-        "rpc": "{{ consul_rpc_address }}",
+        "rpc": "{{ consul_rpc_address }}"
     },
     "advertise_addr": "{{ consul_advertise_addr }}",
 {% if consul_atlas_infrastructure | length %}
@@ -47,8 +47,8 @@
 {% endif %}
     "key_file": "{{ consul_key_file }}",
     "leave_on_terminate": {{ consul_leave_on_terminate }},
-    "log_level": {{ consul_log_level }},
-    "node_name": {{ consul_node_name }},
+    "log_level": "{{ consul_log_level }}",
+    "node_name": "{{ consul_node_name }}",
     "ports": {
         {% if consul_dns_enabled %}"dns": {{ consul_dns_port }},{% endif %}
         "http": {{ consul_http_port }},

@@ -44,7 +44,7 @@ consul_http_address: '{{ consul_client_address }}'
 consul_https_address: '{{ consul_client_address }}'
 consul_rpc_address: '{{ consul_client_address }}'
 
-consul_advertise_addr: '{{ consul_interface }}'
+consul_advertise_addr: '{{ ansible_default_ipv4.address }}'
 consul_atlas_acl_token: ''
 consul_atlas_infrastructure: ''
 consul_atlas_join: ''
@@ -85,7 +85,7 @@ consul_node_name: '{{ ansible_hostname }}'
 # ports:
 consul_dns_port: 8600
 consul_http_port: 8500
-consul_https_port: '-1'
+consul_https_port: -1
 consul_rpc_port: 8400
 consul_serf_lan_port: 8301
 consul_serf_wan_port: 8302
