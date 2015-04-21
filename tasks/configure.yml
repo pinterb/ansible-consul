@@ -1,11 +1,33 @@
 ---
-- name: stat ssl cacert.pem file 
+- name: stat ssl cacert.pem file
   stat: 
-    path: ssl/cacert.pem
+    path: "{{ playbook_dir }}/ssl/cacert.pem"
   register: ssl_ca_file
 
-- debug: msg="ssl cacert.pem exists"
-  when: ssl_ca_file.stat.isreg is defined and ssl_ca_file.stat.isreg
+- when: ssl_ca_file.stat.isreg is not defined or not ssl_ca_file.stat.isreg
+  fail:
+    msg: |
+      ssl cacert.pem file is missing
+
+- name: stat ssl consul.cert.pem file
+  stat: 
+    path: "{{ playbook_dir }}/ssl/certs/consul.cert.pem"
+  register: ssl_consul_cert_file
+
+- when: ssl_consul_cert_file.stat.isreg is not defined or not consul_cert_file.stat.isreg
+  fail:
+    msg: |
+      ssl consul.cert.pem file is missing
+
+- name: stat ssl consul.key.pem file
+  stat: 
+    path: "{{ playbook_dir }}/ssl/private/consul.key.pem"
+  register: ssl_consul_key_file
+
+- when: ssl_consul_key_file.stat.isreg is not defined or not ssl_consul_key_file.stat.isreg
+  fail:
+    msg: |
+      ssl consul.key.pem file is missing
 
 - name: copy over tls files
   copy:
@@ -14,13 +36,13 @@
     owner: "{{ item.owner | default('consul') }}"
     mode: "{{ item.mode | default(0400) }}"
   with_items:
-    - src: ssl/cacert.pem
+    - src: "{{ playbook_dir }}/ssl/cacert.pem"
       dest: "{{ consul_ca_file }}"
       owner: "{{ consul_user }}"
-    - src: ssl/certs/consul.cert.pem
+    - src: "{{ playbook_dir }}/ssl/certs/consul.cert.pem"
       dest: "{{ consul_cert_file }}"
       owner: "{{ consul_user }}"
-    - src: ssl/private/consul.key.pem
+    - src: "{{ playbook_dir }}/ssl/private/consul.key.pem"
       dest: "{{ consul_key_file }}"
       owner: "{{ consul_user }}"
     - src: consul-acl-bootstrap.sh
