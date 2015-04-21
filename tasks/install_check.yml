@@ -1,5 +1,5 @@
 - name: determine if consul config dir exists 
-  stat: path={{ consul_conf_dir }}/common.json
+  stat: path={{ consul_conf_dir }}/consul.json
   register: consul_configuration_path
 
 - debug: msg="Consul configuration directory exists"
