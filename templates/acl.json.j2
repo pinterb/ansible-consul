@@ -5,7 +5,7 @@
     "acl_default_policy": "{{ consul_acl_default_policy }}",
     "acl_down_policy": "{{ consul_acl_down_policy }}",
 {% endif %}
-{%- if consul_agent_token is defined %}
+{% if consul_agent_token is defined %}
     "acl_token": "{{ consul_agent_token }}",
 {% endif %}
 {% if consul_atlas_acl_token | length %}

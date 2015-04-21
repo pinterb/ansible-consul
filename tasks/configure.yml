@@ -34,6 +34,21 @@
     - restart consul
   tags:
     - consul
+
+- name: configure consul acl policy
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    mode: "{{ item.mode | default('u=rw,g=r,o=r') }}"
+  with_items:
+    - src: acl.json.j2
+      dest: "{{ consul_conf_dir }}/acl.json"
+  when:
+    - consul_acl_master_token != ""
+  notify:
+    - restart consul
+  tags:
+    - consul
     
 - name: change ownership of consul files
   file:
@@ -43,7 +58,6 @@
     recurse: true
   notify:
     - restart consul
-  when: not ansible_os_family == 'Darwin'
   tags:
     - consul
 
