@@ -49,7 +49,7 @@ consul_atlas_acl_token: ''
 consul_atlas_infrastructure: ''
 consul_atlas_join: ''
 consul_atlas_token: ''
-consul_bootstrap_expect: 2
+#old: consul_bootstrap_expect: 2
 #new:consul_bootstrap_expect: '{{ groups[consul_servers] | intersect(groups[consul_dc]) | length }}'
 consul_bootstrap_expect: "{{ consul_servers | length }}"
 
